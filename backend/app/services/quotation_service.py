@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from app.services.estimate_builder import EstimateBuilder
+from app.services.export_service import ExportService
 
 
 class QuotationService:
@@ -13,6 +14,7 @@ class QuotationService:
         self._jobs: dict[str, dict[str, Any]] = {}
         self.storage_dir = Path(storage_dir) if storage_dir is not None else None
         self._estimate_builder = EstimateBuilder()
+        self._export_service = ExportService(str(self.storage_dir / "exports") if self.storage_dir is not None else None)
         if self.storage_dir is not None:
             self.storage_dir.mkdir(parents=True, exist_ok=True)
 
@@ -27,6 +29,10 @@ class QuotationService:
         )
 
         estimate = self._estimate_builder.build(payload)
+        export_paths = {
+            "json": str(self._export_service.export_json(job_id, estimate)),
+            "csv": str(self._export_service.export_csv(job_id, estimate)),
+        }
         job = {
             "id": job_id,
             "status": "received",
@@ -36,6 +42,7 @@ class QuotationService:
             "translation_mode": translation_mode,
             "uploaded_files": [str(item) for item in payload.get("sources", [])],
             "estimate": estimate,
+            "exports": export_paths,
             "message": (
                 "Job accepted and ready for processing. "
                 "Russian output will use a natural, polished translation style."
@@ -54,6 +61,9 @@ class QuotationService:
         if job is None:
             return None
 
+        progress = kwargs.get("progress")
+        if progress is not None:
+            job["progress"] = progress
         job.update({"status": status, **kwargs})
         return job
 

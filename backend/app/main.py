@@ -9,7 +9,7 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from app.services.quotation_service import create_job, get_job_status
+from app.services.quotation_service import create_job, get_job_status, update_job_status
 
 
 class QuotationHandler(BaseHTTPRequestHandler):
@@ -43,7 +43,11 @@ class QuotationHandler(BaseHTTPRequestHandler):
             return
 
         job = create_job(payload)
-        self._send_json(201, job)
+        update_job_status(job["id"], "extracting", progress=20)
+        update_job_status(job["id"], "matching", progress=60)
+        update_job_status(job["id"], "ready", progress=100)
+        updated_job = get_job_status(job["id"])
+        self._send_json(201, updated_job or job)
 
     def _send_json(self, status: int, payload: dict) -> None:
         body = json.dumps(payload).encode("utf-8")
