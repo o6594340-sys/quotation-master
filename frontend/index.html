@@ -27,9 +27,22 @@
             </select>
           </label>
 
+          <label class="field">
+            <span>Язык итоговой сметы</span>
+            <select id="output-language">
+              <option value="keep_english">Оставить на английском</option>
+              <option value="translate_russian">Перевести на качественный русский</option>
+            </select>
+            <small class="hint">Для русского мы используем более естественный перевод без буквальной кальки.</small>
+          </label>
+
           <button type="submit">Создать задачу</button>
         </form>
 
+        <section id="estimate-preview" class="estimate-preview" aria-live="polite">
+          <h2>Предпросмотр сметы</h2>
+          <p class="placeholder">После создания задачи здесь появится структура сметы.</p>
+        </section>
         <pre id="result">Ожидание данных...</pre>
       </section>
     </main>

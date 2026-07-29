@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 import json
+import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
 
 from app.services.quotation_service import create_job, get_job_status
 
@@ -30,7 +36,12 @@ class QuotationHandler(BaseHTTPRequestHandler):
 
         content_length = int(self.headers.get("Content-Length", "0"))
         body = self.rfile.read(content_length).decode("utf-8")
-        payload = json.loads(body or "{}")
+        try:
+            payload = json.loads(body or "{}")
+        except json.JSONDecodeError:
+            self._send_json(400, {"error": "invalid json"})
+            return
+
         job = create_job(payload)
         self._send_json(201, job)
 

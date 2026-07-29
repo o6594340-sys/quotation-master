@@ -33,6 +33,39 @@ body {
   margin-bottom: 1rem;
 }
 
+.hint {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.estimate-preview {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  background: #111827;
+}
+
+.estimate-preview h2 {
+  margin-top: 0;
+  margin-bottom: 0.35rem;
+  font-size: 1rem;
+}
+
+.estimate-preview .placeholder {
+  margin: 0 0 0.75rem;
+  color: #94a3b8;
+}
+
+.estimate-preview ul {
+  margin: 0 0 0.75rem 1.1rem;
+  padding: 0;
+}
+
+.estimate-preview li {
+  margin-bottom: 0.45rem;
+}
+
 button {
   margin-top: 0.5rem;
   padding: 0.7rem 1rem;
