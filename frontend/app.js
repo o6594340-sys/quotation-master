@@ -1,6 +1,8 @@
 const form = document.getElementById('quote-form');
 const result = document.getElementById('result');
 const estimatePreview = document.getElementById('estimate-preview');
+const progressFill = document.getElementById('progress-fill');
+const stepPills = Array.from(document.querySelectorAll('.step-pill'));
 const submitButton = form.querySelector('button');
 
 form.addEventListener('submit', async (event) => {
@@ -15,6 +17,7 @@ form.addEventListener('submit', async (event) => {
   submitButton.disabled = true;
   submitButton.textContent = 'Создаём задачу...';
   result.textContent = 'Отправка задачи...';
+  updateWorkflowStatus('received', 20);
 
   try {
     const response = await fetch('http://127.0.0.1:8000/jobs', {
@@ -25,6 +28,7 @@ form.addEventListener('submit', async (event) => {
 
     const data = await response.json();
     result.textContent = JSON.stringify(data, null, 2);
+    updateWorkflowStatus(data.status, 100);
     renderEstimate(data.estimate, data);
   } catch (error) {
     result.textContent = `Ошибка: ${error.message}`;
@@ -33,6 +37,19 @@ form.addEventListener('submit', async (event) => {
     submitButton.textContent = 'Создать задачу';
   }
 });
+
+function updateWorkflowStatus(status, progress) {
+  const stages = ['received', 'extracting', 'matching', 'ready'];
+  const activeIndex = stages.indexOf(status);
+
+  stepPills.forEach((pill, index) => {
+    pill.classList.toggle('active', index <= activeIndex);
+  });
+
+  if (progressFill) {
+    progressFill.style.width = `${Math.max(20, Math.min(progress, 100))}%`;
+  }
+}
 
 function renderEstimate(estimate, job) {
   if (!estimate) {
