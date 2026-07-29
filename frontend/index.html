@@ -14,8 +14,33 @@
 
         <form id="quote-form">
           <label class="field">
+            <span>Программа</span>
+            <input type="file" id="program-sources" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.md,.json,.csv" />
+            <small class="hint">Можно загрузить программу в Word, Excel, PDF, TXT и других простых форматах.</small>
+          </label>
+
+          <label class="field">
             <span>Прайсы</span>
-            <input type="file" id="sources" multiple />
+            <input type="file" id="sources" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.md,.json,.csv" />
+          </label>
+
+          <label class="field">
+            <span>Как составлять смету</span>
+            <div class="option-group">
+              <label class="option-card">
+                <input type="radio" name="program-mode" value="program_only" checked />
+                <span>Смета исключительно на основе загруженной программы</span>
+              </label>
+              <label class="option-card">
+                <input type="radio" name="program-mode" value="mix_budget" />
+                <span>Сделать микс из нескольких программ с приоритетом на более бюджетную</span>
+              </label>
+              <label class="option-card">
+                <input type="radio" name="program-mode" value="mix_interest" />
+                <span>Сделать микс из нескольких программ с приоритетом на более интересную/полезную</span>
+              </label>
+            </div>
+            <small class="hint">Для режимов микса система попросит минимум 2 программы.</small>
           </label>
 
           <label class="field">

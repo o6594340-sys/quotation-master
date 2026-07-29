@@ -5,15 +5,19 @@ const progressFill = document.getElementById('progress-fill');
 const stepPills = Array.from(document.querySelectorAll('.step-pill'));
 const submitButton = form.querySelector('button');
 const templateInput = document.getElementById('template-file');
+const programInput = document.getElementById('program-sources');
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const templateFile = templateInput?.files?.[0];
+  const programMode = form.querySelector('input[name="program-mode"]:checked')?.value || 'program_only';
   const payload = {
+    program_sources: Array.from(programInput?.files || []).map((file) => file.name),
     sources: Array.from(document.getElementById('sources').files).map((file) => file.name),
     strategy: document.getElementById('strategy').value,
     output_language: document.getElementById('output-language').value,
+    program_mode: programMode,
   };
 
   if (templateFile) {

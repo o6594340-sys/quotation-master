@@ -141,6 +141,26 @@ input[type="file"] {
   color: #e2e8f0;
 }
 
+.option-group {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  background: #111827;
+  cursor: pointer;
+}
+
+.option-card input {
+  margin-top: 0.17rem;
+}
+
 button {
   margin-top: 0.5rem;
   padding: 0.7rem 1rem;
