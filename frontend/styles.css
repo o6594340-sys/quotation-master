@@ -133,6 +133,14 @@ body {
   font-weight: 600;
 }
 
+input[type="file"] {
+  padding: 0.6rem 0.7rem;
+  border: 1px dashed #475569;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
 button {
   margin-top: 0.5rem;
   padding: 0.7rem 1rem;

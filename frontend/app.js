@@ -4,15 +4,25 @@ const estimatePreview = document.getElementById('estimate-preview');
 const progressFill = document.getElementById('progress-fill');
 const stepPills = Array.from(document.querySelectorAll('.step-pill'));
 const submitButton = form.querySelector('button');
+const templateInput = document.getElementById('template-file');
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  const templateFile = templateInput?.files?.[0];
   const payload = {
     sources: Array.from(document.getElementById('sources').files).map((file) => file.name),
     strategy: document.getElementById('strategy').value,
     output_language: document.getElementById('output-language').value,
   };
+
+  if (templateFile) {
+    const templateText = await templateFile.text();
+    payload.agency_template = {
+      name: templateFile.name.replace(/\.[^.]+$/, ''),
+      content: templateText,
+    };
+  }
 
   submitButton.disabled = true;
   submitButton.textContent = 'Создаём задачу...';
