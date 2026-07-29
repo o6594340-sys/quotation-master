@@ -40,19 +40,23 @@ body {
 
 .estimate-preview {
   margin-top: 1.25rem;
-  padding: 1rem;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  background: #111827;
 }
 
-.estimate-preview h2 {
+.estimate-card {
+  padding: 1rem;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #111827, #18212f);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.estimate-card h2 {
   margin-top: 0;
   margin-bottom: 0.35rem;
   font-size: 1rem;
 }
 
-.estimate-preview .placeholder {
+.estimate-card .placeholder {
   margin: 0 0 0.75rem;
   color: #94a3b8;
 }

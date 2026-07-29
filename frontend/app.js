@@ -61,6 +61,10 @@ function renderEstimate(estimate, job) {
     .map((item) => `<li><strong>${item.category}</strong> — ${item.description} · ${item.amount.toFixed(2)} · ${item.source}</li>`)
     .join('');
 
+  const parsedFilesMarkup = job && job.parsed_files && job.parsed_files.length
+    ? `<div class="parsed-files"><strong>Parsed files:</strong><ul>${job.parsed_files.map((file) => `<li>${file.filename} · ${file.size_bytes} bytes</li>`).join('')}</ul></div>`
+    : '';
+
   const exportsMarkup = job && job.exports
     ? `<div class="export-actions"><p class="placeholder"><strong>Export:</strong></p><div class="export-buttons"><a class="download-link" href="${job.exports.json}" download>Скачать JSON</a><a class="download-link" href="${job.exports.csv}" download>Скачать CSV</a></div></div>`
     : '';
@@ -69,6 +73,7 @@ function renderEstimate(estimate, job) {
     <h2>${estimate.title}</h2>
     <p class="placeholder">${estimate.subtitle}</p>
     <p class="placeholder"><strong>Status:</strong> ${job?.status || 'unknown'}</p>
+    ${parsedFilesMarkup}
     <ul>${itemsMarkup}</ul>
     <p><strong>Total:</strong> ${estimate.total.toFixed(2)}</p>
     <p class="placeholder"><strong>Strategy:</strong> ${estimate.strategy}</p>

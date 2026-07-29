@@ -5,6 +5,7 @@ from typing import Any
 
 from app.services.estimate_builder import EstimateBuilder
 from app.services.export_service import ExportService
+from app.services.file_parser import FileParser
 
 
 class QuotationService:
@@ -15,6 +16,7 @@ class QuotationService:
         self.storage_dir = Path(storage_dir) if storage_dir is not None else None
         self._estimate_builder = EstimateBuilder()
         self._export_service = ExportService(str(self.storage_dir / "exports") if self.storage_dir is not None else None)
+        self._file_parser = FileParser()
         if self.storage_dir is not None:
             self.storage_dir.mkdir(parents=True, exist_ok=True)
 
@@ -27,6 +29,10 @@ class QuotationService:
             if output_language == "translate_russian"
             else "preserve_source"
         )
+
+        parsed_files = []
+        for source in payload.get("sources", []):
+            parsed_files.append(self._file_parser.parse(str(source)))
 
         estimate = self._estimate_builder.build(payload)
         export_paths = {
@@ -41,6 +47,7 @@ class QuotationService:
             "output_language": output_language,
             "translation_mode": translation_mode,
             "uploaded_files": [str(item) for item in payload.get("sources", [])],
+            "parsed_files": parsed_files,
             "estimate": estimate,
             "exports": export_paths,
             "message": (
