@@ -4,11 +4,13 @@ from typing import Any
 
 
 class EstimateBuilder:
-    """Build a simple estimate payload that can be rendered in English or Russian."""
+    """Build a quote payload using either a default format or an agency-defined template."""
 
     def build(self, payload: dict[str, Any]) -> dict[str, Any]:
         strategy = payload.get("strategy", "lowest_price")
         output_language = payload.get("output_language", "keep_english")
+        template = payload.get("agency_template") or self._default_template()
+
         items = [
             {
                 "category": "Accommodation",
@@ -31,8 +33,8 @@ class EstimateBuilder:
         ]
 
         if output_language == "translate_russian":
-            title = "Смета по программе"
-            subtitle = "Натуральный русский перевод без кальки"
+            title = template.get("title_russian", "Смета по программе")
+            subtitle = template.get("subtitle_russian", "Натуральный русский перевод без кальки")
             translated_items = []
             for item in items:
                 translated_items.append(
@@ -45,18 +47,40 @@ class EstimateBuilder:
                 )
             items = translated_items
         else:
-            title = "Estimate for the program"
-            subtitle = "English version prepared for client delivery"
+            title = template.get("title_english", "Estimate for the program")
+            subtitle = template.get("subtitle_english", "English version prepared for client delivery")
 
-        total = round(sum(item["amount"] for item in items), 2)
+        formatted_items = []
+        for index, item in enumerate(items, start=1):
+            formatted_items.append(
+                {
+                    **item,
+                    "position": index,
+                    "section": template.get("section_name", "Services"),
+                    "template_name": template.get("name", "default"),
+                }
+            )
+
+        total = round(sum(item["amount"] for item in formatted_items), 2)
         return {
             "title": title,
             "subtitle": subtitle,
             "strategy": strategy,
             "output_language": output_language,
-            "items": items,
+            "items": formatted_items,
             "total": total,
             "summary": f"Selected strategy: {strategy}; total estimate: {total:.2f}",
+            "template": template,
+        }
+
+    def _default_template(self) -> dict[str, Any]:
+        return {
+            "name": "default",
+            "title_english": "Estimate for the program",
+            "subtitle_english": "English version prepared for client delivery",
+            "title_russian": "Смета по программе",
+            "subtitle_russian": "Натуральный русский перевод без кальки",
+            "section_name": "Services",
         }
 
     def _translate_category(self, category: str) -> str:

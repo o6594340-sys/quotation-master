@@ -149,3 +149,24 @@ class QuotationServiceTests(unittest.TestCase):
         self.assertEqual(estimate["title"], "Смета по программе")
         self.assertEqual(estimate["items"][0]["category"], "Размещение")
         self.assertGreaterEqual(estimate["total"], 0)
+
+    def test_create_job_uses_agency_template_metadata(self) -> None:
+        agency_template = {
+            "name": "agency_alpha",
+            "title_english": "Agency Alpha Proposal",
+            "subtitle_english": "Prepared in agency format",
+            "title_russian": "Коммерческое предложение Agency Alpha",
+            "subtitle_russian": "Подготовлено по формату агентства",
+            "section_name": "Program Cost",
+        }
+
+        job = self.service.create_job({
+            "sources": ["quote.pdf"],
+            "agency_template": agency_template,
+            "output_language": "keep_english",
+        })
+
+        estimate = job["estimate"]
+        self.assertEqual(estimate["title"], "Agency Alpha Proposal")
+        self.assertEqual(estimate["template"]["name"], "agency_alpha")
+        self.assertEqual(estimate["items"][0]["section"], "Program Cost")
