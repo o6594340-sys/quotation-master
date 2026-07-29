@@ -62,7 +62,7 @@ function renderEstimate(estimate, job) {
     .join('');
 
   const parsedFilesMarkup = job && job.parsed_files && job.parsed_files.length
-    ? `<div class="parsed-files"><strong>Parsed files:</strong><ul>${job.parsed_files.map((file) => `<li>${file.filename} · ${file.size_bytes} bytes</li>`).join('')}</ul></div>`
+    ? `<div class="parsed-files"><strong>Parsed files:</strong><ul>${job.parsed_files.map((file) => `<li><strong>${file.filename}</strong> · ${file.format || 'text'} · ${file.size_bytes} bytes<br><span>${file.sample_text || 'No content extracted'}</span></li>`).join('')}</ul></div>`
     : '';
 
   const exportsMarkup = job && job.exports
