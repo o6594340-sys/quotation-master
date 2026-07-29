@@ -170,3 +170,17 @@ class QuotationServiceTests(unittest.TestCase):
         self.assertEqual(estimate["title"], "Agency Alpha Proposal")
         self.assertEqual(estimate["template"]["name"], "agency_alpha")
         self.assertEqual(estimate["items"][0]["section"], "Program Cost")
+
+    def test_create_job_uses_uploaded_template_content(self) -> None:
+        job = self.service.create_job({
+            "sources": ["quote.pdf"],
+            "agency_template": {
+                "name": "uploaded-template",
+                "content": "Agency Proposal\nProgram Cost",
+            },
+            "output_language": "keep_english",
+        })
+
+        estimate = job["estimate"]
+        self.assertEqual(estimate["title"], "Agency Proposal")
+        self.assertEqual(estimate["items"][0]["section"], "Program Cost")

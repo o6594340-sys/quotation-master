@@ -10,6 +10,10 @@ class EstimateBuilder:
         strategy = payload.get("strategy", "lowest_price")
         output_language = payload.get("output_language", "keep_english")
         template = payload.get("agency_template") or self._default_template()
+        template_content = template.get("content") if isinstance(template, dict) else None
+        template_lines = [line.strip() for line in str(template_content or "").splitlines() if line.strip()]
+        template_title = template_lines[0] if template_lines else None
+        template_section = template_lines[1] if len(template_lines) > 1 else None
 
         items = [
             {
@@ -47,7 +51,7 @@ class EstimateBuilder:
                 )
             items = translated_items
         else:
-            title = template.get("title_english", "Estimate for the program")
+            title = template.get("title_english", template_title or "Estimate for the program")
             subtitle = template.get("subtitle_english", "English version prepared for client delivery")
 
         formatted_items = []
@@ -56,7 +60,7 @@ class EstimateBuilder:
                 {
                     **item,
                     "position": index,
-                    "section": template.get("section_name", "Services"),
+                    "section": template.get("section_name", template_section or "Services"),
                     "template_name": template.get("name", "default"),
                 }
             )
