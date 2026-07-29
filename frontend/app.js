@@ -1,6 +1,7 @@
 const form = document.getElementById('quote-form');
-const result = document.getElementById('result');
 const estimatePreview = document.getElementById('estimate-preview');
+const jobSummary = document.getElementById('job-summary');
+const estimateDetails = document.getElementById('estimate-details');
 const progressFill = document.getElementById('progress-fill');
 const stepPills = Array.from(document.querySelectorAll('.step-pill'));
 const submitButton = form.querySelector('button');
@@ -30,7 +31,7 @@ form.addEventListener('submit', async (event) => {
 
   submitButton.disabled = true;
   submitButton.textContent = 'Создаём задачу...';
-  result.textContent = 'Отправка задачи...';
+  jobSummary.innerHTML = '<p class="placeholder">Отправка задачи...</p>';
   updateWorkflowStatus('received', 20);
 
   try {
@@ -41,11 +42,11 @@ form.addEventListener('submit', async (event) => {
     });
 
     const data = await response.json();
-    result.textContent = JSON.stringify(data, null, 2);
     updateWorkflowStatus(data.status, 100);
+    renderJobSummary(data);
     renderEstimate(data.estimate, data);
   } catch (error) {
-    result.textContent = `Ошибка: ${error.message}`;
+    jobSummary.innerHTML = `<p class="error">Ошибка: ${error.message}</p>`;
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = 'Создать задачу';
@@ -65,9 +66,23 @@ function updateWorkflowStatus(status, progress) {
   }
 }
 
+function renderJobSummary(job) {
+  if (!job) {
+    jobSummary.innerHTML = '<p class="placeholder">После создания задачи здесь появится структура сметы.</p>';
+    return;
+  }
+
+  jobSummary.innerHTML = `
+    <p><strong>Задача:</strong> ${job.id}</p>
+    <p><strong>Статус:</strong> ${job.status}</p>
+    <p><strong>Стратегия:</strong> ${job.strategy || '—'}</p>
+    <p><strong>Сообщение:</strong> ${job.message || '—'}</p>
+  `;
+}
+
 function renderEstimate(estimate, job) {
   if (!estimate) {
-    estimatePreview.innerHTML = '<h2>Предпросмотр сметы</h2><p class="placeholder">После создания задачи здесь появится структура сметы.</p>';
+    estimateDetails.innerHTML = '<p class="placeholder">После создания задачи здесь появится структура сметы.</p>';
     return;
   }
 
@@ -83,10 +98,9 @@ function renderEstimate(estimate, job) {
     ? `<div class="export-actions"><p class="placeholder"><strong>Export:</strong></p><div class="export-buttons"><a class="download-link" href="${job.exports.json}" download>Скачать JSON</a><a class="download-link" href="${job.exports.csv}" download>Скачать CSV</a></div></div>`
     : '';
 
-  estimatePreview.innerHTML = `
+  estimateDetails.innerHTML = `
     <h2>${estimate.title}</h2>
     <p class="placeholder">${estimate.subtitle}</p>
-    <p class="placeholder"><strong>Status:</strong> ${job?.status || 'unknown'}</p>
     ${parsedFilesMarkup}
     <ul>${itemsMarkup}</ul>
     <p><strong>Total:</strong> ${estimate.total.toFixed(2)}</p>
