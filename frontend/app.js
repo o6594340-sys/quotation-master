@@ -25,7 +25,7 @@ form.addEventListener('submit', async (event) => {
 
     const data = await response.json();
     result.textContent = JSON.stringify(data, null, 2);
-    renderEstimate(data.estimate);
+    renderEstimate(data.estimate, data);
   } catch (error) {
     result.textContent = `Ошибка: ${error.message}`;
   } finally {
@@ -34,7 +34,7 @@ form.addEventListener('submit', async (event) => {
   }
 });
 
-function renderEstimate(estimate) {
+function renderEstimate(estimate, job) {
   if (!estimate) {
     estimatePreview.innerHTML = '<h2>Предпросмотр сметы</h2><p class="placeholder">После создания задачи здесь появится структура сметы.</p>';
     return;
@@ -44,11 +44,17 @@ function renderEstimate(estimate) {
     .map((item) => `<li><strong>${item.category}</strong> — ${item.description} · ${item.amount.toFixed(2)} · ${item.source}</li>`)
     .join('');
 
+  const exportsMarkup = job && job.exports
+    ? `<div class="export-actions"><p class="placeholder"><strong>Export:</strong></p><div class="export-buttons"><a class="download-link" href="${job.exports.json}" download>Скачать JSON</a><a class="download-link" href="${job.exports.csv}" download>Скачать CSV</a></div></div>`
+    : '';
+
   estimatePreview.innerHTML = `
     <h2>${estimate.title}</h2>
     <p class="placeholder">${estimate.subtitle}</p>
+    <p class="placeholder"><strong>Status:</strong> ${job?.status || 'unknown'}</p>
     <ul>${itemsMarkup}</ul>
     <p><strong>Total:</strong> ${estimate.total.toFixed(2)}</p>
     <p class="placeholder"><strong>Strategy:</strong> ${estimate.strategy}</p>
+    ${exportsMarkup}
   `;
 }
