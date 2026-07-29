@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quotation Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="panel">
+        <h1>Сборщик сметы</h1>
+        <p>Загрузите прайсы и программу, чтобы запустить MVP-поток обработки.</p>
+
+        <form id="quote-form">
+          <label class="field">
+            <span>Прайсы</span>
+            <input type="file" id="sources" multiple />
+          </label>
+
+          <label class="field">
+            <span>Стратегия</span>
+            <select id="strategy">
+              <option value="lowest_price">Минимальная цена</option>
+              <option value="single_supplier">Один поставщик</option>
+              <option value="mixed">Смешанная стратегия</option>
+            </select>
+          </label>
+
+          <button type="submit">Создать задачу</button>
+        </form>
+
+        <pre id="result">Ожидание данных...</pre>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
