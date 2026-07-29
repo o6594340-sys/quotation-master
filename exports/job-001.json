@@ -1,0 +1,28 @@
+{
+  "title": "Смета по программе",
+  "subtitle": "Натуральный русский перевод без кальки",
+  "strategy": "lowest_price",
+  "output_language": "translate_russian",
+  "items": [
+    {
+      "category": "Размещение",
+      "description": "Номер в отеле на 1 ночь",
+      "amount": 320.0,
+      "source": "Supplier A"
+    },
+    {
+      "category": "Транспорт",
+      "description": "Трансфер из аэропорта",
+      "amount": 85.0,
+      "source": "Supplier B"
+    },
+    {
+      "category": "Питание",
+      "description": "Комплексный обед",
+      "amount": 48.0,
+      "source": "Supplier C"
+    }
+  ],
+  "total": 453.0,
+  "summary": "Selected strategy: lowest_price; total estimate: 453.00"
+}
