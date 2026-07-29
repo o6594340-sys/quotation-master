@@ -184,3 +184,14 @@ class QuotationServiceTests(unittest.TestCase):
         estimate = job["estimate"]
         self.assertEqual(estimate["title"], "Agency Proposal")
         self.assertEqual(estimate["items"][0]["section"], "Program Cost")
+
+    def test_create_job_tracks_program_mode_and_requires_two_programs_for_mix(self) -> None:
+        job = self.service.create_job({
+            "program_sources": ["program1.docx"],
+            "sources": ["price1.xlsx"],
+            "program_mode": "mix_budget",
+        })
+
+        self.assertEqual(job["program_mode"], "mix_budget")
+        self.assertEqual(job["programs_required"], 2)
+        self.assertIn("минимум 2 программы", job["message"].lower())

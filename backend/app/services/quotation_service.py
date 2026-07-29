@@ -29,6 +29,19 @@ class QuotationService:
             if output_language == "translate_russian"
             else "preserve_source"
         )
+        program_mode = payload.get("program_mode", "program_only")
+        program_sources = payload.get("program_sources", [])
+        programs_required = 2 if program_mode in {"mix_budget", "mix_interest"} else 1
+        message = (
+            "Job accepted and ready for processing. "
+            "Russian output will use a natural, polished translation style."
+            if output_language == "translate_russian"
+            else "Job accepted and ready for processing. The estimate will stay in the selected source language."
+        )
+        if program_mode in {"mix_budget", "mix_interest"}:
+            message = (
+                f"{message} Для этого режима необходимо загрузить минимум {programs_required} программы."
+            )
 
         parsed_files = []
         for source in payload.get("sources", []):
@@ -46,16 +59,14 @@ class QuotationService:
             "strategy": payload.get("strategy", "lowest_price"),
             "output_language": output_language,
             "translation_mode": translation_mode,
+            "program_mode": program_mode,
+            "program_sources": [str(item) for item in program_sources],
+            "programs_required": programs_required,
             "uploaded_files": [str(item) for item in payload.get("sources", [])],
             "parsed_files": parsed_files,
             "estimate": estimate,
             "exports": export_paths,
-            "message": (
-                "Job accepted and ready for processing. "
-                "Russian output will use a natural, polished translation style."
-                if output_language == "translate_russian"
-                else "Job accepted and ready for processing. The estimate will stay in the selected source language."
-            ),
+            "message": message,
         }
         self._jobs[job_id] = job
         return job
